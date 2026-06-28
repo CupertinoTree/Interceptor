@@ -1,6 +1,6 @@
 # Interceptor - Satellite Optical Tracker
 
-A Qt-based application for capturing and displaying live video from ASI cameras with OpenCV integration.
+A Qt-based application for predicting a satellite pass over a site, connecting to a Skywatcher Alt Az mount, tracking the satellite open-loop ; then use an ASI camera to track it closed-loop once in view.
 
 ## WARNINGS:
 
