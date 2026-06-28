@@ -1,0 +1,17 @@
+# Build artifacts
+build/
+
+# Editor and IDE files
+.vscode/
+
+# Data directory to ignore
+data/
+
+# macOS metadata
+.DS_Store
+
+# Temporary files
+*~
+*.swp
+*.swo
+*.tmp
