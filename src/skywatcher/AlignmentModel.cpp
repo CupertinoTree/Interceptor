@@ -85,99 +85,22 @@ bool AlignmentModel::solve() {
     return true;
 }
 
+double AlignmentModel::levelErrorDeg() const {
+    // mount zenith in mount frame
+    Eigen::Vector3d z_mount(0.0, 0.0, 1.0);
 
-/*bool AlignmentModel::solve() {
-    const std::size_t N = skyVecs_.size();
-    if (N < 2 || mountVecs_.size() != N) return false;
+    // where that zenith points in true sky frame
+    Eigen::Vector3d z_sky = R_ * z_mount;
+    z_sky.normalize();
 
-    // Build cross-covariance H directly (no centroids)
-    Eigen::Matrix3d H = Eigen::Matrix3d::Zero();
-    for (std::size_t i = 0; i < N; ++i) {
-        // map mount -> sky
-        H += mountVecs_[i] * skyVecs_[i].transpose();
-    }
+    // true zenith in sky frame
+    Eigen::Vector3d z_true(0.0, 0.0, 1.0);
 
-    // SVD
-    Eigen::JacobiSVD<Eigen::Matrix3d> svd(H, Eigen::ComputeFullU | Eigen::ComputeFullV);
-    Eigen::Matrix3d U = svd.matrixU();
-    Eigen::Matrix3d V = svd.matrixV();
-    Eigen::Vector3d S = svd.singularValues();
+    double dot = std::clamp(z_sky.dot(z_true), -1.0, 1.0);
+    double angRad = std::acos(dot);
+    return angRad * RAD2DEG;   // this is your level error
+}
 
-    Eigen::Matrix3d R = U * V.transpose();
-
-    // Fix reflection if needed
-    if (R.determinant() < 0.0) {
-        Eigen::Matrix3d D = Eigen::Matrix3d::Identity();
-        D(2,2) = -1.0;
-        R = U * D * V.transpose();
-    }
-
-    R_ = R;
-    solved = true;
-
-    // Diagnostics: residuals (angular errors) and SVD info
-    double maxErrDeg = 0.0;
-    double sumErrDeg = 0.0;
-    for (std::size_t i = 0; i < N; ++i) {
-        Eigen::Vector3d pred = R_ * mountVecs_[i];
-        double dot = std::clamp(pred.normalized().dot(skyVecs_[i].normalized()), -1.0, 1.0);
-        double ang = std::acos(dot) * RAD2DEG;
-        sumErrDeg += ang;
-        maxErrDeg = std::max(maxErrDeg, ang);
-    }
-    double meanErrDeg = sumErrDeg / static_cast<double>(N);
-
-    std::cout << "Alignment solved: N=" << N
-              << "  singulars=[" << S.transpose() << "]"
-              << "  det(R)=" << R_.determinant()
-              << "  meanErrDeg=" << meanErrDeg
-              << "  maxErrDeg=" << maxErrDeg << "\n";
-
-    return true;
-}*/
-
-
-/*bool AlignmentModel::solve() {
-    const std::size_t N = skyVecs_.size();
-    if (N < 2 || mountVecs_.size() != N)
-        return false;
-
-    // Compute centroids
-    Eigen::Vector3d cSky  = Eigen::Vector3d::Zero();
-    Eigen::Vector3d cMount = Eigen::Vector3d::Zero();
-    for (std::size_t i = 0; i < N; ++i) {
-        cSky  += skyVecs_[i];
-        cMount += mountVecs_[i];
-    }
-    cSky  /= static_cast<double>(N);
-    cMount /= static_cast<double>(N);
-
-    // Build covariance matrix H
-    Eigen::Matrix3d H = Eigen::Matrix3d::Zero();
-    for (std::size_t i = 0; i < N; ++i) {
-        Eigen::Vector3d ps = skyVecs_[i]   - cSky;
-        Eigen::Vector3d pm = mountVecs_[i] - cMount;
-        H += pm * ps.transpose(); // map mount -> sky
-    }
-
-    // SVD: H = U * S * V^T
-    Eigen::JacobiSVD<Eigen::Matrix3d> svd(H, Eigen::ComputeFullU | Eigen::ComputeFullV);
-    Eigen::Matrix3d U = svd.matrixU();
-    Eigen::Matrix3d V = svd.matrixV();
-
-    Eigen::Matrix3d R = U * V.transpose();
-
-    // Ensure proper rotation (det = +1)
-    if (R.determinant() < 0.0) {
-        Eigen::Matrix3d D = Eigen::Matrix3d::Identity();
-        D(2, 2) = -1.0;
-        R = U * D * V.transpose();
-    }
-
-    R_ = R;
-    solved = true;
-    return true;
-}*/
 
 AltAzCoords AlignmentModel::mountToTrueSky(const AltAzCoords& mount) const {
     Eigen::Vector3d vm = altAzToVec(mount);

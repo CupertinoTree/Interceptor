@@ -15,6 +15,7 @@ public:
     bool solved = false;
     AltAzCoords mountToTrueSky(const AltAzCoords& mount) const; // corrected sky Alt/Az
     AltAzCoords trueSkyToMount(const AltAzCoords& sky) const;
+    double levelErrorDeg() const;
 
 private:
     std::vector<Eigen::Vector3d> skyVecs_;
@@ -24,4 +25,6 @@ private:
     static Eigen::Vector3d altAzToVec(const AltAzCoords& aa);
     static AltAzCoords vecToAltAz(const Eigen::Vector3d& v);
 };
+
+
 

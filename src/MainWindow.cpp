@@ -134,7 +134,7 @@ void MainWindow::setupUI() {
 
     mainLayout->addWidget(tabWidget);
 
-    setWindowTitle("Interceptor: Satellite Optical Tracker");
+    setWindowTitle("Interceptor: Optical Satellite Tracker");
     resize(900, 600);
 
     updateGuidingTabState();

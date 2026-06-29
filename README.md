@@ -1,4 +1,4 @@
-# Interceptor - Satellite Optical Tracker
+# Interceptor - Optical Satellite Tracker
 
 A Qt-based application for predicting a satellite pass over a site, connecting to a Skywatcher Alt Az mount, tracking the satellite open-loop ; then use an ASI camera to track it closed-loop once in view.
 
