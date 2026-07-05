@@ -64,9 +64,11 @@ add_executable(Interceptor ${PROJECT_SOURCES})
 target_include_directories(Interceptor PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/src"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/sgp4"
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/skyfield"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/skywatcher"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/zwo"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/ui"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/controllers"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/model"
   ${OpenCV_INCLUDE_DIRS}
   ${LIBNOVA_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
