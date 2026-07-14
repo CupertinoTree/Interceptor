@@ -46,7 +46,6 @@ private:
     void setupConnections();
 
     QLabel* fpsLabel;
-    QLabel * cameraLabel;
     QLabel * exposureLabel;
     QLabel * gainLabel;
     QLabel * autodetectStatusLabel;

@@ -66,17 +66,10 @@ cmake --build . --config Release
 
 - **Live Camera Feed**: Display real-time video from connected ASI cameras
 - **Camera Selection**: Switch between multiple connected cameras
-- **Exposure Control**: Adjust exposure in microseconds or milliseconds
-- **Gain Control**: Adjust camera gain
 - **FPS Monitor**: Real-time frames per second display
-- **Camera Detection**: Automatic detection of connected/disconnected cameras
+- **Target autodetection**: Detects a target in the frame with a Pypogs-derived tracking algorithm
 
 ## Troubleshooting
-
-### "ASICamera2.h not found"
-- Verify the ASI Camera SDK is installed
-- Check that `ASI_CAMERA_SDK_INCLUDE` path in `CMakeLists.txt` is correct
-- Install the SDK if missing
 
 ### "Qt not found"
 - Verify Qt6 installation: `brew list qt`
@@ -85,15 +78,3 @@ cmake --build . --config Release
 ### "OpenCV not found"
 - Verify OpenCV installation: `brew list opencv`
 - If using Homebrew, OpenCV should be in `/opt/homebrew/opt/opencv/`
-
-### Compilation errors with clang++
-- Ensure clang++ is available: `which clang++`
-- The build script uses clang++ explicitly; if not in PATH, install via Xcode Command Line Tools
-
-## Project Files
-
-- `Interceptor.cpp`: Main application code with UI and camera handling
-- `CMakeLists.txt`: Build configuration for CMake
-- `build.sh`: Automated build script
-- `.gitignore`: Git ignore rules
-- `README.md`: This file
