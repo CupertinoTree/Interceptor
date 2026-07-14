@@ -11,6 +11,7 @@ class QComboBox;
 class QPushButton;
 class QTabWidget;
 class CameraTab;
+class MountTab;
 
 class MainWindow : public QWidget {
     Q_OBJECT
@@ -57,6 +58,7 @@ private:
     QLabel *errorLabel = nullptr;
 
     CameraTab* cameraTab;
+    MountTab* mountTab;
 };
 
 #endif // MAINWINDOW_H

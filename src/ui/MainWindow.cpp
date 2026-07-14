@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "CameraTab.h"
+#include "MountTab.h"
 #include "Vision.h"
 #include <QLabel>
 #include <QTabWidget>
@@ -26,16 +27,19 @@ void MainWindow::setupUI()
     layout->addWidget(videoLabel, 1);
 
     tabWidget = new QTabWidget(this);
-    tabWidget->setMaximumWidth(300);
+    tabWidget->setMaximumWidth(250);
 
     cameraTab = new CameraTab(this);
     tabWidget->addTab(cameraTab, "Camera");
-    layout->addWidget(tabWidget);
 
+    mountTab = new MountTab(this);
+    tabWidget->addTab(mountTab, "Mount");
+
+    layout->addWidget(tabWidget);
     setLayout(layout);
 
     setWindowTitle("Interceptor: Optical Satellite Tracker");
-    resize(900, 600);
+    resize(1100, 675);
 }
 
 void MainWindow::setupConnections()

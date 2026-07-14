@@ -2,10 +2,28 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QSlider>
-#include "QComboBox"
-#include "QPushButton"
+#include <QComboBox>
+#include <QGroupBox>
+#include <QPushButton>
+#include <QScrollArea>
 #include <QVariant>
 #include "model/Enums.h"
+
+namespace {
+
+QGroupBox* createStyledGroupBox(const QString& title)
+{
+    QGroupBox* box = new QGroupBox(title);
+    box->setStyleSheet(
+        "QGroupBox {"
+        "font-size: 14px;"
+        "font-weight: bold;"
+        "}"
+    );
+    return box;
+}
+
+} // namespace
 
 CameraTab::CameraTab(QWidget *parent)
     : QWidget(parent)
@@ -16,60 +34,81 @@ CameraTab::CameraTab(QWidget *parent)
 
 void CameraTab::setupUI()
 {   
-    auto cameraLayout = new QVBoxLayout(this);
+    auto mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(6, 6, 6, 0);
 
-    cameraLabel = new QLabel("Camera Settings");
-    cameraLabel->setStyleSheet("font-weight: bold;");
-    cameraLayout->addWidget(cameraLabel);
+    QWidget* contentWidget = new QWidget;
+    auto contentLayout = new QVBoxLayout(contentWidget);
+    contentLayout->setContentsMargins(6, 6, 6, 0);
+    contentLayout->setAlignment(Qt::AlignTop);
+
+    QLabel* cameraLabel = new QLabel("Camera Tab");
+    cameraLabel->setStyleSheet(
+        "font-weight: bold;"
+        "font-size: 18px"
+    );
+    contentLayout->addWidget(cameraLabel);
+    contentLayout->addSpacing(5);
 
     cameraSelectCombo = new QComboBox();
     cameraSelectCombo->addItem("No Camera");
-    cameraLayout->addWidget(cameraSelectCombo);
+    contentLayout->addWidget(cameraSelectCombo);
+    contentLayout->addSpacing(10);
 
-    QLabel* exposureTitle = new QLabel("Exposure");
-    exposureTitle->setStyleSheet("font-weight: bold;");
-    cameraLayout->addWidget(exposureTitle);
+    QGroupBox* exposureGroup = createStyledGroupBox("Exposure");
+    QVBoxLayout* exposureLayout = new QVBoxLayout(exposureGroup);
+    exposureLayout->setContentsMargins(6, 6, 6, 6);
 
     exposureUnitCombo = new QComboBox();
     exposureUnitCombo->addItem("Exposure (μs)", QVariant::fromValue(ExposureUnit::μs));
     exposureUnitCombo->addItem("Exposure (ms)", QVariant::fromValue(ExposureUnit::ms));
-    cameraLayout->addWidget(exposureUnitCombo);
+    exposureUnitCombo->setEnabled(false);
+    exposureLayout->addWidget(exposureUnitCombo);
 
     exposureSlider = new QSlider(Qt::Horizontal);
     exposureSlider->setRange(1, 1000);
     exposureSlider->setValue(1);
     exposureSlider->setEnabled(false);
-    cameraLayout->addWidget(exposureSlider);
+    exposureLayout->addWidget(exposureSlider);
 
     exposureLabel = new QLabel("Exposure: 1 μs");
-    cameraLayout->addWidget(exposureLabel);
+    exposureLayout->addWidget(exposureLabel);
 
-    QLabel* gainTitle = new QLabel("Gain");
-    gainTitle->setStyleSheet("font-weight: bold;");
-    cameraLayout->addWidget(gainTitle);
+    contentLayout->addWidget(exposureGroup);
+    contentLayout->addSpacing(10);
 
-    gainLabel = new QLabel("Gain: 0");
-    cameraLayout->addWidget(gainLabel);
+    QGroupBox* gainGroup = createStyledGroupBox("Gain");
+    QVBoxLayout* gainLayout = new QVBoxLayout(gainGroup);
+    gainLayout->setContentsMargins(6, 6, 6, 6);
 
     gainSlider = new QSlider(Qt::Horizontal);
     gainSlider->setRange(0, 600);
     gainSlider->setValue(0);
     gainSlider->setEnabled(false);
-    cameraLayout->addWidget(gainSlider);
+    gainLayout->addWidget(gainSlider);
+
+    gainLabel = new QLabel("Gain: 0");
+    gainLayout->addWidget(gainLabel);
+
+    contentLayout->addWidget(gainGroup);
+    contentLayout->addSpacing(10);
 
     fpsLabel = new QLabel("FPS: 0", this);
-    cameraLayout->addWidget(fpsLabel);
+    contentLayout->addWidget(fpsLabel);
 
     autodetectTargetButton = new QPushButton("Auto-detect target");
     autodetectTargetButton->setCheckable(false);
-    cameraLayout->addWidget(autodetectTargetButton);
+    autodetectTargetButton->setEnabled(false);
+    contentLayout->addWidget(autodetectTargetButton);
 
     autodetectStatusLabel = new QLabel("Auto-detecting off.");
-    cameraLayout->addWidget(autodetectStatusLabel);
+    contentLayout->addWidget(autodetectStatusLabel);
+    contentLayout->addSpacing(10);
 
-    QLabel* primaryCameraFOVLabel = new QLabel("Primary camera FOV:");
-    primaryCameraFOVLabel->setStyleSheet("font-weight: bold;");
-    cameraLayout->addWidget(primaryCameraFOVLabel);
+    QGroupBox* ROIGroup = createStyledGroupBox("Primary camera FOV:");
+    QVBoxLayout* ROILayout = new QVBoxLayout(ROIGroup);
+    ROILayout->setContentsMargins(6, 6, 6, 0);
+    ROILayout->setSpacing(4);
 
     QHBoxLayout* buttonsLayout = new QHBoxLayout();
 
@@ -81,13 +120,22 @@ void CameraTab::setupUI()
     lowerRightButton->setEnabled(false);
     buttonsLayout->addWidget(lowerRightButton);
 
-    cameraLayout->addLayout(buttonsLayout);
+    ROILayout->addLayout(buttonsLayout);
 
     resetROIButton = new QPushButton("Reset");
-    cameraLayout->addWidget(resetROIButton);
+    ROILayout->addWidget(resetROIButton);
 
-    cameraLayout->addStretch();
-    setLayout(cameraLayout);
+    contentLayout->addWidget(ROIGroup);
+
+    QScrollArea* scroll = new QScrollArea;
+    scroll->setWidgetResizable(true);
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scroll->setFrameStyle(QFrame::NoFrame);
+    scroll->setWidget(contentWidget);
+
+    mainLayout->addWidget(scroll);
+    setLayout(mainLayout);
 }
 
 void CameraTab::setupConnections()
